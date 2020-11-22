@@ -1,6 +1,15 @@
 import requests
+import sqlite3
 
-playername = 'tropulus'
+conn = sqlite3.connect('example.db')
+#c = conn.cursor()
+#c.execute('CREATE TABLE test (DBNOs, assist, boosts)')
+#c.execute("INSERT INTO test VALUES ('3', '4', '6')")
+#conn.commit()
+# for row in c.execute('SELECT * FROM test'):
+#         print(row)
+
+playername = 'TheBebopBengal'
 platform = 'steam'
 
 
@@ -16,47 +25,48 @@ response = requests.get(
     url=url,
     headers=headers
 )
-
 json = response.json()
-player_id = json['data'][0]['id']
 matches = json['data'][0]['relationships']['matches']['data']
 ids = [matches[i].get('id') for i in range(len(matches))]
 # --------------------------------------
 
-url_matches = f"https://api.pubg.com/shards/{platform}/matches/{ids[0]}"
+
+
+url_matches = f"https://api.pubg.com/shards/{platform}/matches/{ids[4]}"
 
 response = requests.get(
     url=url_matches,
     headers=headers
 )
 
+
 participants = response.json()['included']
+#print(response.json()['data']['attributes']['mapName'])
+
+
+Sanhok = 'Savage_Main'
+Erangel = 'Baltic_Main'
+Vikendi = 'DihorOtok_Main'
+Mirmar = 'Desert_Main'
+
+
+partic1 = []
+partic2 = []
+for count, ele in enumerate(participants):
+    if 'stats' in ele['attributes']:
+        partic1.append(ele)
+
+for count, ele in enumerate(partic1):
+    if 'name' in ele['attributes']['stats']:
+        partic2.append(ele)
+
+for count, ele in enumerate(partic2):
+    if ele['attributes']['stats']['name'] == playername:
+        idx = count
+
+print(partic2[idx]['attributes']['stats'])
 
 
 
 
-# OK DO THIS INSTEAD: CHECK IF NAME EXIST, IF NAME EXIST PUT IN VECTOR
 
-
-
-
-
-
-
-
-print(len(participants))
-for i, e in enumerate(participants):
-    keys = participants[i]['attributes']['stats'].keys()
-    if 'name' not in keys:
-        participants[i].pop('stats', None)
-print(len(participants))
-# a = participants[3]['attributes']['stats']
-# print(a)
-#
-# participants[3].pop('stats', None)
-# print(participants[0:5])
-#print(participants[3]['attributes']['stats']['name'])
-
-
-# if participants[0]['attributes']['stats']['playerId'] == player_id
-#stats = [participants[3]['attributes']['stats']['name'] for i in range(len(participants))]
